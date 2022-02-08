@@ -46,6 +46,13 @@ class Qemu < Formula
     sha256 "81237c7b42dc0ffc8b32a2f5734e3480a3f9a470c50c14a9c4576a2561a35807"
   end
 
+  # Add virtio-9p support
+  # See https://lore.kernel.org/all/2B4D46DD-074E-4070-BAF0-AADAD1183B33@icloud.com/T/
+  patch do
+    url "https://raw.githubusercontent.com/philnalwalker/qemu-darwin-9p-patch/main/9p.patch"
+    sha256 "7dfda8d542dc0b530c7b91ed7a500a8a12da44620fc725ecbeb5317791ab9f9b"
+  end
+
   def install
     ENV["LIBTOOL"] = "glibtool"
 
@@ -71,6 +78,7 @@ class Qemu < Formula
     args << "--smbd=#{HOMEBREW_PREFIX}/sbin/samba-dot-org-smbd"
 
     args << "--enable-cocoa" if OS.mac?
+    args << "--enable-hvf" if OS.mac?
 
     system "./configure", *args
     system "make", "V=1", "install"
